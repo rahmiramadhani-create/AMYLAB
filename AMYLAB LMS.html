@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><title>AMYLAB LMS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#f4f7f6;--sf:#fff;--tx:#1f2d2a;--mt:#5f6f6b;--pr:#0f8f7e;--pr2:#e0f3f0;--bd:#d9e2df;--bad:#c0392b;--ok:#1e8e4e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121917;--sf:#1b2522;--tx:#e6f0ed;--mt:#94a8a3;--pr:#3cc5b1;--pr2:#16332e;--bd:#2c3b37;--bad:#ff7a6b;--ok:#4cd98a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121917;--sf:#1b2522;--tx:#e6f0ed;--mt:#94a8a3;--pr:#3cc5b1;--pr2:#16332e;--bd:#2c3b37;--bad:#ff7a6b;--ok:#4cd98a;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 system-ui,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{margin:.2em 0 .5em}.mt{color:var(--mt)}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:16px}
+button,.btn{background:var(--pr);color:#fff;border:0;border-radius:9px;padding:9px 16px;font:inherit;font-weight:600;cursor:pointer}
+button.g{background:var(--pr2);color:var(--pr)}button.o{background:var(--sf);color:var(--tx);border:1px solid var(--bd)}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--bd);border-radius:9px;background:var(--sf);color:var(--tx);font:inherit;margin:4px 0 10px}
+textarea{min-height:80px}label{font-weight:600;font-size:13px}
+#auth{min-height:100vh;display:grid;place-items:center;padding:16px}
+#auth .card{width:100%;max-width:420px;padding:26px}
+.logo{font-size:30px;font-weight:800;color:var(--pr);letter-spacing:1px}
+.tabs{display:flex;gap:6px;margin-bottom:14px}.tabs button{flex:1}
+#app{display:none;min-height:100vh}
+header{position:sticky;top:0;z-index:5;background:var(--sf);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px;padding:10px 16px}
+header .logo{font-size:22px}header .sp{flex:1}
+nav{position:fixed;top:56px;bottom:0;left:0;width:230px;background:var(--sf);border-right:1px solid var(--bd);overflow:auto;padding:10px}
+nav a{display:block;padding:10px 12px;border-radius:0 24px 24px 0;color:var(--tx);cursor:pointer;margin-right:8px}
+nav a.on{background:var(--pr2);color:var(--pr);font-weight:700}
+main{margin-left:230px;padding:20px;max-width:1000px}
+#mb{display:none}
+@media(max-width:760px){nav{display:none;top:56px;z-index:9}nav.show{display:block}main{margin-left:0;padding:12px}#mb{display:inline-block}}
+.hero{background:linear-gradient(120deg,var(--pr),#2a6fdb);color:#fff;border-radius:14px;padding:22px;margin-bottom:16px}
+.map{display:flex;flex-direction:column;align-items:center;gap:8px;overflow-x:auto}
+.map .n{background:var(--pr2);border:2px solid var(--pr);border-radius:12px;padding:8px 14px;text-align:center;font-weight:600}
+.map .r{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}.map .ar{color:var(--pr)}
+.opt{display:block;padding:8px 12px;border:1px solid var(--bd);border-radius:9px;margin:5px 0;cursor:pointer;font-weight:400}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}
+.score{font-size:42px;font-weight:800;color:var(--pr)}
+iframe{width:100%;height:480px;border:1px solid var(--bd);border-radius:12px;background:#fff}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%}th,td{border:1px solid var(--bd);padding:7px 9px;text-align:left}th{background:var(--pr2)}
+.chat{height:300px;overflow:auto;background:var(--bg);border-radius:10px;padding:10px;border:1px solid var(--bd)}
+.m{max-width:80%;padding:7px 11px;border-radius:12px;margin:5px 0;background:var(--sf);border:1px solid var(--bd)}.m.me{margin-left:auto;background:var(--pr2)}.m small{display:block;color:var(--mt);font-size:11px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:120px}
+canvas{width:100%;max-width:520px;border:1px solid var(--bd);border-radius:10px;background:var(--sf)}
+</style></head><body>
+<div id="auth"><div class="card">
+<div class="logo">AMYLAB</div><p class="mt">Learning Management System · Fisika: Hukum Pascal</p>
+<div class="tabs"><button id="tLogin" onclick="setMode('login')">Masuk</button><button id="tReg" class="g" onclick="setMode('reg')">Daftar</button></div>
+<div class="tabs"><button id="rS" onclick="setRole('siswa')">Siswa</button><button id="rG" class="g" onclick="setRole('guru')">Guru</button></div>
+<label>Akun Google (Gmail)</label><input id="em" type="email" placeholder="nama@gmail.com">
+<div id="nmW"><label>Nama lengkap</label><input id="nm" placeholder="Nama kamu"></div>
+<label>Password LMS</label><input id="pw" type="password" placeholder="Password LMS">
+<div id="kdW" style="display:none"><label>Kode guru</label><input id="kd" placeholder="Kode dari pemilik AMYLAB"></div>
+<button style="width:100%" onclick="submitAuth()" id="go">Masuk</button>
+<p id="err" class="bad"></p>
+<p class="mt" style="font-size:12px">Akun Google dipakai sebagai identitas akun. Password LMS dibuat saat mendaftar.</p>
+</div></div>
+
+<div id="app">
+<header><button id="mb" class="g" onclick="document.querySelector('nav').classList.toggle('show')">☰</button><span class="logo">AMYLAB</span><span class="sp"></span><span id="who" class="mt"></span><button class="o" onclick="logout()">Keluar</button></header>
+<nav id="nav"></nav><main id="main"></main></div>
+
+<script>
+// ===== KONFIGURASI PEMILIK =====
+const KODE_GURU="AMYLAB-GURU-2026"; // ganti lalu bagikan ke guru
+const KKM=75;
+// ===============================
+const $=s=>document.querySelector(s);
+let DB=null,U=null,mode='login',role='siswa',page='dash',cfg={},chatT=null;
+const clean=s=>s.toLowerCase().replace(/[^a-z0-9]/g,'_');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// --- penyimpanan: db bersama bila tersedia, kalau tidak localStorage ---
+const ready=(async()=>{try{if(window.claude)DB=await claude.use("db")}catch(e){DB=null}})();
+function lsAll(c){try{return JSON.parse(localStorage.getItem('amy_'+c)||'{}')}catch(e){return{}}}
+async function put(c,id,o){await ready;if(DB){try{await DB.collection(c).doc(id).set(o);return}catch(e){}}try{const a=lsAll(c);a[id]=o;localStorage.setItem('amy_'+c,JSON.stringify(a))}catch(e){}}
+async function get(c,id){await ready;if(DB){try{const s=await DB.collection(c).doc(id).get();return s.exists?s.data():null}catch(e){}}return lsAll(c)[id]||null}
+async function list(c){await ready;if(DB){try{return(await DB.collection(c).get()).docs.map(d=>d.data())}catch(e){}}return Object.values(lsAll(c))}
+async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('amylab:'+t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+const rid=k=>clean(U.email)+'__'+k;
+const saveR=(k,v)=>put('results',rid(k),{email:U.email,name:U.name,key:k,v,t:Date.now()});
+const getR=k=>get('results',rid(k));
+
+// --- auth ---
+function setMode(m){mode=m;$('#tLogin').className=m=='login'?'':'g';$('#tReg').className=m=='reg'?'':'g';$('#nmW').style.display=m=='reg'?'':'none';$('#go').textContent=m=='reg'?'Daftar':'Masuk'}
+function setRole(r){role=r;$('#rS').className=r=='siswa'?'':'g';$('#rG').className=r=='guru'?'':'g';$('#kdW').style.display=r=='guru'?'':'none'}
+async function submitAuth(){
+ const em=$('#em').value.trim().toLowerCase(),pw=$('#pw').value,nm=$('#nm').value.trim(),kd=$('#kd').value.trim(),er=$('#err');er.textContent='';
+ if(!/^\S+@\S+\.\S+$/.test(em)||pw.length<6){er.textContent='Isi akun Google yang valid dan password LMS minimal 6 karakter.';return}
+ if(role=='guru'&&kd!==KODE_GURU){er.textContent='Kode guru salah.';return}
+ const id=clean(em),h=await sha(pw),ex=await get('users',id);
+ if(mode=='reg'){
+  if(ex){er.textContent='Akun sudah terdaftar, silakan masuk.';return}
+  if(!nm){er.textContent='Nama lengkap wajib diisi.';return}
+  U={email:em,name:nm,role,h};await put('users',id,U);
+ }else{
+  if(!ex||ex.h!==h){er.textContent='Akun atau password salah.';return}
+  if(ex.role!==role){er.textContent='Akun ini terdaftar sebagai '+ex.role+'.';return}
+  U=ex;
+ }
+ try{sessionStorage.setItem('amy_u',JSON.stringify(U))}catch(e){}
+ start();
+}
+function logout(){try{sessionStorage.removeItem('amy_u')}catch(e){}clearInterval(chatT);location.reload()}
+async function start(){
+ cfg=(await get('cfg','main'))||{};
+ $('#auth').style.display='none';$('#app').style.display='block';
+ $('#who').textContent=U.name+' · '+(U.role=='guru'?'Guru':'Siswa');
+ go(page);
+}
+try{const s=JSON.parse(sessionStorage.getItem('amy_u')||'null');if(s){U=s;start()}}catch(e){}
+
+// --- navigasi ---
+const MENU=[['dash','🏠 Dashboard'],['akt','🗺️ Aktivitas Belajar'],['pre','📝 Pretest'],['mat','📘 Materi'],['vid','🎬 Video Fenomena'],['sim','⚙️ Simulasi'],['prak','🧪 Praktikum'],['dis','💬 Ruang Diskusi'],['post','✅ Postest'],['ref','🪞 Refleksi'],['kel','🎥 Kelas Online'],['rek','📊 Rekapitulasi'],['pus','📚 Daftar Pustaka']];
+function go(p){page=p;clearInterval(chatT);
+ $('#nav').innerHTML=MENU.filter(m=>m[0]!='rek'||U.role=='guru').map(m=>`<a class="${m[0]==p?'on':''}" onclick="go('${m[0]}')">${m[1]}</a>`).join('');
+ $('#nav').classList.remove('show');$('#main').innerHTML='';R[p]();window.scrollTo(0,0)}
+const out=h=>$('#main').innerHTML=h;
+async function saveCfg(k,v){cfg[k]=v;await put('cfg','main',cfg);go(page)}
+
+// --- soal ---
+const PRE=[["Tekanan pada zat cair di ruang tertutup diteruskan ke segala arah dengan sama besar. Pernyataan ini adalah bunyi hukum…",["Archimedes","Pascal","Newton","Boyle"],1],
+["Rumus tekanan yang benar adalah…",["P = F × A","P = F / A","P = A / F","P = m × g"],1],
+["Pada dongkrak hidrolik A₁ = 10 cm², F₁ = 20 N, A₂ = 200 cm². Gaya F₂ adalah…",["40 N","200 N","400 N","4000 N"],2],
+["Alat yang bekerja berdasarkan hukum Pascal adalah…",["Termometer","Dongkrak hidrolik","Barometer raksa","Kompas"],1],
+["Jika luas penampang besar (A₂) diperbesar sedangkan F₁ dan A₁ tetap, gaya F₂ akan…",["Semakin kecil","Tetap","Semakin besar","Nol"],2]];
+const POST=[["Pernyataan yang sesuai dengan hukum Pascal adalah…",["Gaya apung sama dengan berat zat cair yang dipindahkan","Tekanan di zat cair tertutup diteruskan sama besar ke semua titik","Volume gas berbanding terbalik dengan tekanan","Kecepatan fluida naik saat penampang menyempit"],1],
+["Satuan tekanan dalam SI adalah…",["N","Pa (N/m²)","kg/m³","Joule"],1],
+["Pada pompa hidrolik A₁ = 5 cm², F₁ = 10 N, A₂ = 100 cm². Gaya F₂ adalah…",["20 N","50 N","200 N","500 N"],2],
+["Sistem rem pada mobil memanfaatkan prinsip…",["Hukum Pascal","Hukum Ohm","Hukum Hooke","Hukum Archimedes"],0],
+["Jika A₂ dibuat dua kali lebih besar, sedangkan F₁ dan A₁ tetap, gaya F₂ menjadi…",["Setengah kali","Tetap","Dua kali","Empat kali"],2]];
+
+function quiz(key,qs,after){
+ getR(key).then(r=>{
+  const body=qs.map((q,i)=>`<div class="card"><b>${i+1}. ${esc(q[0])}</b>${q[1].map((o,j)=>`<label class="opt"><input type="radio" name="q${i}" value="${j}" style="width:auto;margin-right:8px">${esc(o)}</label>`).join('')}</div>`).join('');
+  const done=r?res(r.v):'';
+  out(`<h2>${key=='pre'?'Pretest':'Postest'}</h2><p class="mt">${qs.length} soal pilihan ganda. Skor langsung tampil setelah dikirim.${key=='post'?' KKM = '+KKM+'.':''}</p><div id="qs">${body}</div><button onclick="sendQuiz('${key}')">Kirim jawaban</button><div id="res" style="margin-top:16px">${done}</div>`);
+  if(r&&after)after(r.v);
+ });
+ function res(v){return resHtml(key,qs,v)}
+}
+function resHtml(key,qs,v){
+ const det=qs.map((q,i)=>`<li>${v.a[i]==q[2]?'<span class="ok">Benar</span>':'<span class="bad">Salah</span>'} — jawaban benar: ${esc(q[1][q[2]])}</li>`).join('');
+ return `<div class="card"><div class="mt">Skor terakhir kamu</div><div class="score">${v.s}</div><ul>${det}</ul><div id="next"></div></div>`}
+async function sendQuiz(key){
+ const qs=key=='pre'?PRE:POST,a=qs.map((q,i)=>{const c=document.querySelector(`input[name=q${i}]:checked`);return c?+c.value:-1});
+ if(a.includes(-1)){alert('Jawab semua soal terlebih dahulu.');return}
+ const s=Math.round(a.filter((x,i)=>x==qs[i][2]).length/qs.length*100),v={a,s};
+ await saveR(key,v);$('#res').innerHTML=resHtml(key,qs,v);after2(key,v);$('#res').scrollIntoView({behavior:'smooth'})}
+function after2(key,v){
+ const n=$('#next');if(!n)return;
+ if(key=='post'){n.innerHTML=v.s>=KKM
+  ?`<h3 class="ok">Tuntas (≥ ${KKM}) — lanjut Pengayaan</h3><p>Soal pengayaan (HOTS): Sebuah dongkrak hidrolik memiliki A₁ = 4 cm² dan A₂ = 400 cm². Berapa gaya minimal pada piston kecil untuk mengangkat mobil 1.000 kg (g = 10 m/s²)? Jelaskan pula mengapa piston kecil harus bergerak lebih jauh.</p><textarea id="enr" placeholder="Tulis jawaban pengayaan"></textarea><button onclick="saveExtra('enr','pengayaan')">Simpan pengayaan</button>`
+  :`<h3 class="bad">Belum tuntas (&lt; ${KKM}) — lanjut Remedial</h3><p>Pelajari ulang: P = F/A, dan pada sistem hidrolik F₁/A₁ = F₂/A₂. Perbesar A₂ → F₂ ikut membesar (keuntungan mekanis = A₂/A₁). Setelah membaca ulang Materi dan mencoba Simulasi, jelaskan dengan kata-katamu sendiri:</p><textarea id="rem" placeholder="Tulis ringkasan remedial"></textarea><button onclick="saveExtra('rem','remedial')">Simpan remedial</button> <button class="g" onclick="go('mat')">Buka Materi</button> <button class="o" onclick="go('post')">Ulangi postest</button>`}
+ else n.innerHTML='<p class="mt">Lanjutkan ke menu Materi.</p>'}
+async function saveExtra(id,k){const t=$('#'+id).value.trim();if(!t)return;await saveR(k,{text:t});alert('Tersimpan dan terkirim ke guru.')}
+
+// --- halaman ---
+const R={
+dash(){out(`<div class="hero"><h2>Selamat datang, ${esc(U.name)}!</h2>Pembelajaran Fisika — Fluida Statis: Hukum Pascal</div>
+<div class="card"><h3>Capaian Pembelajaran</h3><p>Peserta didik mampu menerapkan konsep tekanan pada fluida statis, termasuk hukum Pascal, untuk menjelaskan fenomena dan menyelesaikan masalah sehari-hari melalui investigasi ilmiah.</p></div>
+<div class="card"><h3>Tujuan Pembelajaran</h3><ol><li>Menjelaskan bunyi dan konsep hukum Pascal.</li><li>Menghitung gaya dan tekanan pada sistem hidrolik dengan F₁/A₁ = F₂/A₂.</li><li>Menganalisis hubungan luas penampang dan gaya melalui praktikum.</li><li>Menjelaskan penerapan hukum Pascal pada dongkrak, rem hidrolik, dan pompa.</li></ol></div>
+<div class="card"><h3>Alur belajar</h3><p>Aktivitas → Pretest → Materi → Video → Simulasi → Praktikum → Diskusi → Postest → Refleksi.</p><button onclick="go('akt')">Mulai belajar</button></div>`)},
+akt(){out(`<h2>Aktivitas Belajar</h2><div class="card"><h3>Peta Konsep</h3><div class="map">
+<div class="n">Fluida Statis</div><div class="ar">↓</div><div class="n">Tekanan (P = F/A)</div><div class="ar">↓</div><div class="n" style="background:var(--pr);color:#fff">Hukum Pascal</div><div class="ar">↓</div>
+<div class="r"><div class="n">Tekanan diteruskan sama besar</div><div class="n">F₁/A₁ = F₂/A₂</div><div class="n">Keuntungan mekanis A₂/A₁</div></div><div class="ar">↓</div>
+<div class="r"><div class="n">Dongkrak hidrolik</div><div class="n">Rem hidrolik</div><div class="n">Pompa hidrolik</div><div class="n">Kursi dokter gigi</div></div></div></div>
+<div class="card"><h3>Langkah kegiatan</h3><ol><li>Kerjakan pretest.</li><li>Baca kasus dan jawab pertanyaan pemantik.</li><li>Tonton video fenomena, lalu coba simulasi.</li><li>Lakukan praktikum dengan LKPD dan diskusikan hasilnya.</li><li>Kerjakan postest dan isi refleksi.</li></ol></div>`)},
+pre(){quiz('pre',PRE,v=>after2('pre',v))},
+post(){quiz('post',POST,v=>after2('post',v))},
+async mat(){const r=await getR('pemantik')||{v:{}},v=r.v;
+ const P=["Mengapa tukang bengkel hanya memerlukan gaya kecil untuk mengangkat mobil? Jelaskan dengan konsep tekanan.","Jika luas piston besar 50 kali piston kecil, berapa kali gaya yang dihasilkan? Jelaskan.","Sebutkan satu contoh lain penerapan hukum Pascal dalam kehidupan sehari-hari."];
+ out(`<h2>Materi</h2><div class="card"><h3>Kasus</h3><p>Pak Budi memiliki bengkel. Setiap hari ia mengangkat mobil bermassa sekitar 1.200 kg memakai dongkrak hidrolik. Padahal Pak Budi hanya menekan tuas dengan tenaga kecil. Mobil yang berat itu naik perlahan, tetapi tuasnya harus dipompa berkali-kali.</p></div>
+<div class="card"><h3>Hukum Pascal</h3><p><b>Bunyi:</b> tekanan yang diberikan pada zat cair di ruang tertutup diteruskan sama besar ke segala arah.</p><p><b>Tekanan:</b> P = F / A (satuan Pa = N/m²).</p><p>Pada sistem hidrolik dengan dua piston: <b>P₁ = P₂ → F₁/A₁ = F₂/A₂</b>, sehingga F₂ = F₁ × (A₂/A₁).</p><p><b>Contoh:</b> A₁ = 10 cm², A₂ = 500 cm², F₁ = 40 N → F₂ = 40 × 500/10 = 2.000 N.</p><p><b>Penerapan:</b> dongkrak hidrolik, rem hidrolik, pompa hidrolik, mesin press, kursi dokter gigi. Volume cairan dipertahankan: A₁d₁ = A₂d₂, sehingga piston kecil bergerak lebih jauh.</p></div>
+<div class="card"><h3>Pertanyaan Pemantik</h3>${P.map((q,i)=>`<label>${i+1}. ${q}</label><textarea id="pm${i}">${esc(v['p'+i]||'')}</textarea>`).join('')}<button onclick="savePm()">Kirim jawaban</button> <span id="ok" class="ok"></span></div>`)},
+vid(){const g=U.role=='guru';let u=cfg.video||'';
+ const m=u.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);
+ out(`<h2>Video Fenomena</h2><div class="card">${m?`<iframe src="https://www.youtube.com/embed/${m[1]}" allowfullscreen></iframe>`:'<p class="mt">Guru belum menambahkan video fenomena.</p>'}
+<p><b>Pertanyaan renungan:</b> Fenomena apa yang kamu lihat? Mengapa benda berat bisa terangkat dengan gaya kecil?</p></div>
+${g?`<div class="card"><label>Tautan YouTube (guru)</label><input id="vu" value="${esc(u)}" placeholder="https://www.youtube.com/watch?v=..."><button onclick="saveCfg('video',$('#vu').value)">Simpan video</button></div>`:''}`)},
+sim(){out(`<h2>Simulasi</h2><div class="row" style="margin-bottom:12px"><button id="s1" onclick="simTab(1)">Simulasi AMYLAB</button><button id="s2" class="g" onclick="simTab(2)">MechSimulator</button></div><div id="sb"></div>`);simTab(1)},
+prak(){getR('lkpd').then(r=>{const v=(r&&r.v)||{rows:[[10,0],[20,0],[30,0]],a:['','','']};
+ out(`<h2>Praktikum — LKPD Hukum Pascal</h2><div class="card"><h3>Petunjuk</h3><p>Buka <b>Simulasi AMYLAB</b>, tetapkan A₁ = 10 cm² dan A₂ = 100 cm². Variasikan F₁, catat F₂ pada tabel, lalu grafik akan dibuat otomatis. <button class="g" onclick="go('sim')">Buka simulasi</button></p></div>
+<div class="card"><h3>Tabel data (F₁ → F₂)</h3><div class="tw"><table><tr><th>No</th><th>F₁ (N)</th><th>F₂ (N)</th></tr><tbody id="tb"></tbody></table></div><button class="g" onclick="addRow()">+ Tambah baris</button> <button onclick="plot()">Buat grafik</button><br><br><canvas id="cv" width="520" height="320"></canvas></div>
+<div class="card"><h3>Pertanyaan LKPD</h3>${['Bagaimana bentuk grafik F₂ terhadap F₁? Apa artinya?','Hitung kemiringan (gradien) grafik. Apa hubungannya dengan A₂/A₁?','Tuliskan kesimpulan praktikummu.'].map((q,i)=>`<label>${i+1}. ${q}</label><textarea id="lk${i}">${esc(v.a[i]||'')}</textarea>`).join('')}<button onclick="saveLkpd()">Kirim LKPD</button> <span id="ok" class="ok"></span></div>`);
+ window.rows=v.rows;drawRows();plot()})},
+dis(){const g=window.grp||'';out(`<h2>Ruang Diskusi</h2><div class="card"><div class="row"><div><label>Kode kelompok / kelas</label><input id="gp" value="${esc(g)}" placeholder="mis. kelompok1"></div><div style="align-self:end"><button onclick="joinG()">Masuk ruang</button></div></div>
+<div class="chat" id="chat"><span class="mt">Masukkan kode kelompok untuk memulai. Guru dapat bergabung dengan kode yang sama.</span></div><div class="row" style="margin-top:8px"><input id="msg" placeholder="Tulis pesan…" onkeydown="if(event.key=='Enter')sendMsg()"><button style="flex:0" onclick="sendMsg()">Kirim</button></div></div>
+<div class="card"><h3>Hasil Diskusi</h3>${['Apa kesimpulan kelompok tentang hukum Pascal?','Apa keuntungan dan keterbatasan sistem hidrolik?','Berikan satu contoh penerapan dan jelaskan prinsip kerjanya.'].map((q,i)=>`<label>${i+1}. ${q}</label><textarea id="ds${i}"></textarea>`).join('')}<button onclick="saveDis()">Kirim hasil diskusi</button> <span id="ok" class="ok"></span></div>`);
+ getR('diskusi').then(r=>{if(r)[0,1,2].forEach(i=>$('#ds'+i).value=r.v.a[i]||'')});if(g)joinG()},
+ref(){getR('refleksi').then(r=>{const v=(r&&r.v)||{a:[]};out(`<h2>Refleksi</h2><div class="card">${['Apa yang sudah kamu pahami hari ini?','Bagian mana yang masih sulit?','Bagaimana kamu akan menerapkan hukum Pascal dalam kehidupan?','Perasaan/kesan terhadap pembelajaran dengan AMYLAB:'].map((q,i)=>`<label>${q}</label><textarea id="rf${i}">${esc(v.a[i]||'')}</textarea>`).join('')}<button onclick="saveRef()">Kirim refleksi</button> <span id="ok" class="ok"></span></div>`)})},
+kel(){const g=U.role=='guru';out(`<h2>Kelas Online</h2><div class="card">${cfg.meet?`<p>Tautan kelas aktif:</p><a class="btn" href="${esc(cfg.meet)}" target="_blank" rel="noopener">Gabung kelas (Meet/Zoom)</a>`:'<p class="mt">Guru belum membagikan tautan kelas online.</p>'}</div>${g?`<div class="card"><label>Tautan Google Meet / Zoom (guru)</label><input id="mu" value="${esc(cfg.meet||'')}" placeholder="https://meet.google.com/..."><button onclick="saveCfg('meet',$('#mu').value)">Bagikan ke siswa</button></div>`:''}`)},
+async rek(){out('<h2>Rekapitulasi Penilaian</h2><p class="mt">Memuat…</p>');
+ const rs=await list('results'),us=(await list('users')).filter(u=>u.role=='siswa'),by={};rs.forEach(r=>(by[r.email]=by[r.email]||{})[r.key]=r.v);
+ const sc=(o,k)=>o&&o[k]?o[k].s:'–',tx=(o,k)=>o&&o[k]?'<span class="ok">✓</span>':'–';
+ const rows=us.map(u=>{const o=by[u.email]||{},t=o.post?o.post.s:null;return `<tr><td>${esc(u.name)}<br><small class="mt">${esc(u.email)}</small></td><td>${sc(o,'pre')}</td><td>${sc(o,'post')}</td><td>${t==null?'–':t>=KKM?'<span class="ok">Tuntas</span>':'<span class="bad">Remedial</span>'}</td><td>${tx(o,'pemantik')}</td><td>${tx(o,'lkpd')}</td><td>${tx(o,'diskusi')}</td><td>${tx(o,'refleksi')}</td><td>${o.pengayaan?'Pengayaan ✓':o.remedial?'Remedial ✓':'–'}</td><td><details><summary>Lihat</summary>${det(o)}</details></td></tr>`}).join('');
+ out(`<h2>Rekapitulasi Penilaian</h2><p class="mt">${DB?'Data tersinkron dari semua siswa.':'Mode lokal: data hanya dari perangkat ini.'}</p><div class="card tw"><table><tr><th>Siswa</th><th>Pretest</th><th>Postest</th><th>Status</th><th>Pemantik</th><th>LKPD</th><th>Diskusi</th><th>Refleksi</th><th>Tindak lanjut</th><th>Jawaban</th></tr>${rows||'<tr><td colspan=10>Belum ada siswa terdaftar.</td></tr>'}</table></div>`)},
+pus(){out(`<h2>Daftar Pustaka</h2><div class="card"><ol>
+<li>Halliday, D., Resnick, R., &amp; Walker, J. (2014). <i>Fundamentals of Physics</i> (10th ed.). Wiley.</li>
+<li>Giancoli, D. C. (2014). <i>Physics: Principles with Applications</i> (7th ed.). Pearson.</li>
+<li>Kanginan, M. (2016). <i>Fisika untuk SMA/MA Kelas XI</i>. Erlangga.</li>
+<li>Serway, R. A., &amp; Jewett, J. W. (2018). <i>Physics for Scientists and Engineers</i> (10th ed.). Cengage.</li>
+<li>MechSimulator. (n.d.). <i>Mechanical simulations</i>. https://www.mechsimulator.com</li></ol><p class="mt">Guru dapat menyesuaikan sumber sesuai materi yang digunakan.</p></div>`)}
+};
+function det(o){const f=(t,x)=>x?`<p><b>${t}:</b> ${esc(x)}</p>`:'';let s='';
+ if(o.pemantik)s+=f('Pemantik',Object.values(o.pemantik).join(' | '));
+ if(o.lkpd)s+=f('LKPD',o.lkpd.a.join(' | '))+f('Data',o.lkpd.rows.map(r=>r.join('→')).join(', '));
+ if(o.diskusi)s+=f('Diskusi',o.diskusi.a.join(' | '));if(o.refleksi)s+=f('Refleksi',o.refleksi.a.join(' | '));
+ if(o.pengayaan)s+=f('Pengayaan',o.pengayaan.text);if(o.remedial)s+=f('Remedial',o.remedial.text);return s||'–'}
+const done=()=>{const e=$('#ok');if(e){e.textContent='Terkirim ke guru ✓'}};
+async function savePm(){await saveR('pemantik',{p0:$('#pm0').value,p1:$('#pm1').value,p2:$('#pm2').value});done()}
+async function saveLkpd(){await saveR('lkpd',{rows:window.rows,a:[0,1,2].map(i=>$('#lk'+i).value)});done()}
+async function saveDis(){await saveR('diskusi',{a:[0,1,2].map(i=>$('#ds'+i).value)});done()}
+async function saveRef(){await saveR('refleksi',{a:[0,1,2,3].map(i=>$('#rf'+i).value)});done()}
+
+// --- simulasi ---
+function simTab(n){$('#s1').className=n==1?'':'g';$('#s2').className=n==2?'':'g';
+ if(n==2){$('#sb').innerHTML=`<iframe src="https://www.mechsimulator.com" title="MechSimulator"></iframe><p class="mt">Jika kotak di atas kosong, situs menolak ditampilkan di dalam halaman lain: <a href="https://www.mechsimulator.com" target="_blank" rel="noopener">buka MechSimulator</a>.</p>`;return}
+ $('#sb').innerHTML=`<div class="card"><div class="row"><div><label>F₁ = <span id="f1v">20</span> N</label><input type="range" id="f1" min="5" max="100" value="20" oninput="sim()"></div><div><label>A₁ = <span id="a1v">10</span> cm²</label><input type="range" id="a1" min="5" max="50" value="10" oninput="sim()"></div><div><label>A₂ = <span id="a2v">100</span> cm²</label><input type="range" id="a2" min="50" max="500" step="10" value="100" oninput="sim()"></div></div>
+ <canvas id="sc" width="520" height="300"></canvas><p id="so"></p></div>`;sim()}
+function sim(){const f1=+$('#f1').value,a1=+$('#a1').value,a2=+$('#a2').value;$('#f1v').textContent=f1;$('#a1v').textContent=a1;$('#a2v').textContent=a2;
+ const f2=f1*a2/a1,P=f1/(a1/1e4);$('#so').innerHTML=`Tekanan P = F₁/A₁ = <b>${P.toFixed(0)} Pa</b> · F₂ = F₁ × A₂/A₁ = <b>${f2.toFixed(1)} N</b> · keuntungan mekanis = <b>${(a2/a1).toFixed(1)}×</b> · jika piston kecil turun 10 cm, piston besar naik <b>${(10*a1/a2).toFixed(2)} cm</b>`;
+ const c=$('#sc').getContext('2d'),css=getComputedStyle(document.documentElement),pr=css.getPropertyValue('--pr'),tx=css.getPropertyValue('--tx');c.clearRect(0,0,520,300);
+ const w1=20+a1*1.2,w2=20+a2*0.5,x1=90,x2=330,y=150;c.fillStyle='#4aa3df55';c.fillRect(x1-w1/2,y,w1,120);c.fillRect(x1,y+90,x2-x1,30);c.fillRect(x2-w2/2,y,w2,120);
+ c.fillStyle=pr;const up=Math.min(60,10*a1/a2*8);c.fillRect(x1-w1/2,y-10,w1,10);c.fillRect(x2-w2/2,y-10-up,w2,10);c.fillStyle=tx;c.font='13px sans-serif';c.fillText('F₁ '+f1+' N',x1-25,y-50);c.fillText('↓',x1-3,y-30);c.fillText('F₂ '+f2.toFixed(0)+' N',x2-30,y-30-up);c.fillText('↑',x2-3,y-14-up)}
+
+// --- praktikum ---
+function drawRows(){$('#tb').innerHTML=window.rows.map((r,i)=>`<tr><td>${i+1}</td><td><input type="number" value="${r[0]}" onchange="rows[${i}][0]=+this.value" style="margin:0"></td><td><input type="number" value="${r[1]}" onchange="rows[${i}][1]=+this.value" style="margin:0"></td></tr>`).join('')}
+function addRow(){window.rows.push([0,0]);drawRows()}
+function plot(){const c=$('#cv').getContext('2d'),css=getComputedStyle(document.documentElement),pr=css.getPropertyValue('--pr'),tx=css.getPropertyValue('--tx'),rs=window.rows.filter(r=>r[0]||r[1]);c.clearRect(0,0,520,320);
+ const mx=Math.max(10,...rs.map(r=>r[0]))*1.1,my=Math.max(10,...rs.map(r=>r[1]))*1.1,X=x=>50+x/mx*440,Y=y=>280-y/my*250;
+ c.strokeStyle=tx;c.fillStyle=tx;c.beginPath();c.moveTo(50,20);c.lineTo(50,280);c.lineTo(500,280);c.stroke();c.font='12px sans-serif';c.fillText('F₁ (N)',440,298);c.fillText('F₂ (N)',4,18);
+ for(let i=0;i<=4;i++){c.fillText((mx*i/4).toFixed(0),X(mx*i/4)-8,296);c.fillText((my*i/4).toFixed(0),12,Y(my*i/4)+4)}
+ const s=[...rs].sort((a,b)=>a[0]-b[0]);c.strokeStyle=pr;c.lineWidth=2;c.beginPath();s.forEach((r,i)=>i?c.lineTo(X(r[0]),Y(r[1])):c.moveTo(X(r[0]),Y(r[1])));c.stroke();c.fillStyle=pr;s.forEach(r=>{c.beginPath();c.arc(X(r[0]),Y(r[1]),4,0,7);c.fill()})}
+
+// --- diskusi (obrolan dengan polling) ---
+function joinG(){window.grp=clean($('#gp').value.trim());if(!window.grp)return;loadChat();clearInterval(chatT);chatT=setInterval(loadChat,3000)}
+async function loadChat(){const ms=(await list('chat')).filter(m=>m.g==window.grp).sort((a,b)=>a.t-b.t).slice(-100),c=$('#chat');if(!c)return;
+ const nb=c.scrollTop+c.clientHeight>=c.scrollHeight-30;c.innerHTML=ms.map(m=>`<div class="m ${m.e==U.email?'me':''}"><small>${esc(m.n)}${m.r=='guru'?' (Guru)':''}</small>${esc(m.x)}</div>`).join('')||'<span class="mt">Belum ada pesan.</span>';if(nb)c.scrollTop=c.scrollHeight}
+async function sendMsg(){const x=$('#msg').value.trim();if(!x||!window.grp)return;$('#msg').value='';const t=Date.now();await put('chat',t+'_'+clean(U.email),{g:window.grp,e:U.email,n:U.name,r:U.role,x,t});loadChat()}
+setMode('login');setRole('siswa');
+</script></body></html>
